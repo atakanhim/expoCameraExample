@@ -1,31 +1,29 @@
-import { StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import * as MediaLibrary from 'expo-media-library'
+import { Camera, CameraType, FlashMode } from 'expo-camera'
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+const index = () => {
 
-export default function TabOneScreen() {
+
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+
+      <Text>asda</Text>
+
+
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+
+
+    padding: 15
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});
+
+})
+export default index

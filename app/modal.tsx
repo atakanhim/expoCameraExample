@@ -1,35 +1,86 @@
-import { StatusBar } from 'expo-status-bar';
-import { Platform, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image } from 'react-native'
+import React, { LegacyRef, useEffect, useRef, useState } from 'react'
+import * as MediaLibrary from 'expo-media-library'
+import { Camera, CameraCapturedPicture, CameraType, FlashMode } from 'expo-camera'
+import { Entypo } from '@expo/vector-icons';
+import Button from '@/components/Button';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+const Modal = () => {
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null)
+  const [image, setImage] = useState<string | undefined>(undefined)
 
-export default function ModalScreen() {
+  const [type, setType] = useState<number | CameraType | undefined>(undefined)
+  const [flash, setFlash] = useState<number | FlashMode | undefined>(undefined)
+
+  const cameraRef = useRef<any>()
+
+  useEffect(() => {
+    (async () => {
+      await MediaLibrary.requestPermissionsAsync();
+      const cameraStatus = await Camera.requestCameraPermissionsAsync();
+      console.log(cameraStatus.status);
+      setHasCameraPermission(cameraStatus.status === 'granted');
+
+    })();
+
+  }, [])
+  const takePicture = async () => {
+    if (cameraRef) {
+      try {
+        const data = await cameraRef.current?.takePictureAsync();
+        console.log(data?.uri);
+        setImage(data?.uri);
+
+
+
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }
+  const savePicture = async () => {
+    if (cameraRef) {
+      try {
+        console.log("saveledm")
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }
+
+  if (hasCameraPermission === false)
+    return <Text>no premiison</Text>
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Modal</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/modal.tsx" />
+      {!image ? <Camera
+        style={styles.camera}
+        type={type}
+        flashMode={flash}
+        ref={cameraRef}
+      >
 
-      {/* Use a light status bar on iOS to account for the black space above the modal */}
-      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
+      </Camera> : <Image source={{ uri: image }} style={styles.camera} />}
+      {image ?
+        <View style={{ flexDirection: 'row', justifyContent: "space-between" }}>
+          <Button icon={"retweet"} title={'Retweet'} onPress={() => setImage(undefined)} />
+          <Button icon={"check"} title={'Save'} onPress={savePicture} />
+        </View> :
+        <View>
+          <Button icon={"camera"} title={'Take A Picture'} onPress={takePicture} />
+        </View>}
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: "center",
+    backgroundColor: "#000",
+    padding: 25
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});
+  camera: {
+    flex: 1
+  }
+})
+export default Modal;
