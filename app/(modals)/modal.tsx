@@ -9,11 +9,13 @@ const Modal = () => {
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null)
   const [image, setImage] = useState<string | undefined>(undefined)
 
-  const [type, setType] = useState<number | CameraType | undefined>(undefined)
-  const [flash, setFlash] = useState<number | FlashMode | undefined>(undefined)
+  const [type, setType] = useState<number | CameraType | undefined>(CameraType.back)
+  const [flash, setFlash] = useState<number | FlashMode | undefined>(FlashMode.off)
 
   const cameraRef = useRef<any>()
-
+  useEffect(() => {
+    console.log(flash)
+  }, [flash, setFlash])
   useEffect(() => {
     (async () => {
       await MediaLibrary.requestPermissionsAsync();
@@ -28,11 +30,7 @@ const Modal = () => {
     if (cameraRef) {
       try {
         const data = await cameraRef.current?.takePictureAsync();
-        console.log(data?.uri);
         setImage(data?.uri);
-
-
-
       } catch (e) {
         console.log(e);
       }
@@ -41,25 +39,66 @@ const Modal = () => {
   const savePicture = async () => {
     if (cameraRef) {
       try {
-        console.log("saveledm")
+
+        await MediaLibrary.createAssetAsync(image!).then((data) => {
+          console.log(data)
+
+          setImage(undefined);
+        })
+
+
+
       } catch (e) {
         console.log(e);
       }
     }
   }
+  const switchCameraType = (type: CameraType) => {
 
+    switch (type) {
+      case CameraType.front:
+        setType(CameraType.back)
+        break;
+      case CameraType.back:
+        setType(CameraType.front)
+        break;
+
+      default:
+        break;
+    }
+  }
+  const switchFlashType = (flash: FlashMode) => {
+
+    switch (flash) {
+      case FlashMode.on:
+        setFlash(FlashMode.off)
+        break;
+      case FlashMode.off:
+        setFlash(FlashMode.on)
+        break;
+
+      default:
+        break;
+    }
+  }
   if (hasCameraPermission === false)
     return <Text>no premiison</Text>
   return (
     <View style={styles.container}>
-      {!image ? <Camera
-        style={styles.camera}
-        type={type}
-        flashMode={flash}
-        ref={cameraRef}
-      >
+      {!image ?
+        <Camera
+          style={styles.camera}
+          type={type}
+          flashMode={flash}
+          ratio='16:9'
+          ref={cameraRef}
+        >
+          <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 15, paddingTop: 15 }}>
+            <Button size={45} icon={"retweet"} title={''} onPress={() => switchCameraType(type as CameraType)} />
+            <Button size={45} icon={"flash"} onPress={() => switchFlashType(flash as FlashMode)} color={flash === FlashMode.off ? 'gray' : '#fff'} />
+          </View>
 
-      </Camera> : <Image source={{ uri: image }} style={styles.camera} />}
+        </Camera> : <Image source={{ uri: image }} style={styles.camera} />}
       {image ?
         <View style={{ flexDirection: 'row', justifyContent: "space-between" }}>
           <Button icon={"retweet"} title={'Retweet'} onPress={() => setImage(undefined)} />
@@ -77,10 +116,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     backgroundColor: "#000",
-    padding: 25
+    paddingBottom: 25
   },
   camera: {
-    flex: 1
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "red",
   }
 })
 export default Modal;
