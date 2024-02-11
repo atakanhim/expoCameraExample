@@ -27,32 +27,36 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: '<-            Sec Birini            ->',
+
+          title: 'Sec Birini',
+          headerTitleStyle: {
+            fontSize: 24,
+            fontStyle: "italic"
+          },
           headerTitleAlign: "center",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           headerRight: () => (
-            <Link href="/(modals)/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="camera"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
+
+            <Pressable onPress={() => router.push("/modal")} >
+              {({ pressed }) => (
+                <FontAwesome
+                  name="camera"
+                  size={25}
+                  color={Colors[colorScheme ?? 'light'].text}
+                  style={{ marginRight: 25, opacity: pressed ? 0.5 : 1 }}
+                />
+              )}
+            </Pressable>
+
           ),
           headerLeft: () => (
-
-            <Pressable onPress={() => router.push("/(modals)/exscreen")} >
+            <Pressable onPress={() => router.push("/exscreen")} >
               {({ pressed }) => (
                 <FontAwesome
                   name="image"
                   size={25}
                   color={Colors[colorScheme ?? 'light'].text}
-                  style={{ marginLeft: 15, opacity: pressed ? 0.5 : 1 }}
+                  style={{ marginLeft: 25, opacity: pressed ? 0.5 : 1 }}
                 />
               )}
             </Pressable>
