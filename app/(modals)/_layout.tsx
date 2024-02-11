@@ -4,11 +4,14 @@ import { Stack } from 'expo-router'
 
 const _layout = () => {
     return (
-        <Stack initialRouteName='exscreen'>
-            <Stack.Screen name="exscreen" options={{ presentation: 'modal' }} />
+        <Stack >
 
-            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        </Stack>
+            <Stack.Screen name="modal" options={{ title: "Kamera ile ekle", headerTitleAlign: "center", presentation: "modal", animation: "slide_from_right" }} />
+
+
+            <Stack.Screen name="exscreen" options={{ title: "Galeri ile ekle", headerTitleAlign: "center", presentation: "transparentModal", animation: "slide_from_bottom" }} />
+
+        </Stack >
     )
 }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
+import { Link, Tabs, router } from 'expo-router';
 import { Pressable } from 'react-native';
 
 import Colors from '@/constants/Colors';
@@ -27,14 +27,15 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Tab One',
+          title: '<-            Sec Birini            ->',
+          headerTitleAlign: "center",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           headerRight: () => (
-            <Link href="/exscreen" asChild>
+            <Link href="/(modals)/modal" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
-                    name="info-circle"
+                    name="camera"
                     size={25}
                     color={Colors[colorScheme ?? 'light'].text}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
@@ -42,6 +43,20 @@ export default function TabLayout() {
                 )}
               </Pressable>
             </Link>
+          ),
+          headerLeft: () => (
+
+            <Pressable onPress={() => router.push("/(modals)/exscreen")} >
+              {({ pressed }) => (
+                <FontAwesome
+                  name="image"
+                  size={25}
+                  color={Colors[colorScheme ?? 'light'].text}
+                  style={{ marginLeft: 15, opacity: pressed ? 0.5 : 1 }}
+                />
+              )}
+            </Pressable>
+
           ),
         }}
       />

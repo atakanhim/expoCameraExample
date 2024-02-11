@@ -4,6 +4,9 @@ import * as MediaLibrary from 'expo-media-library'
 import { Camera, CameraCapturedPicture, CameraType, FlashMode } from 'expo-camera'
 import { Entypo } from '@expo/vector-icons';
 import Button from '@/components/Button';
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '@/firebaseConfig';
+import { uploadImageFunc } from '@/components/uploadImageFunc';
 
 const Modal = () => {
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null)
@@ -11,6 +14,11 @@ const Modal = () => {
 
   const [type, setType] = useState<number | CameraType | undefined>(CameraType.back)
   const [flash, setFlash] = useState<number | FlashMode | undefined>(FlashMode.off)
+
+
+  const [video, setVideo] = useState<any>("")
+  const [progressBar, setProgress] = useState<number>(0)
+
 
   const cameraRef = useRef<any>()
   useEffect(() => {
@@ -40,17 +48,35 @@ const Modal = () => {
     if (cameraRef) {
       try {
 
-        await MediaLibrary.createAssetAsync(image!).then((data) => {
-          console.log(data)
-
-          setImage(undefined);
-        })
-
+        await uploadImageFunc({
+          uri: image as string,
+          filetype: "image",
+          fileTuru: "jpg",
+          saveRecord,
+          setImage,
+          setProgress,
+          setVideo,
+          fileDirectory: "CameraModal/"
+        });
 
 
       } catch (e) {
         console.log(e);
       }
+    }
+  }
+  async function saveRecord({ uri, filetype, fileTuru, createdAt }: { uri: string; filetype: string, fileTuru: string, createdAt: string }) {
+    try {
+      const docRef = await addDoc(collection(db, "modalFiles"), {
+        fileType: filetype,
+        fileUrl: uri,
+        fileCreatingTime: createdAt,
+        fileExtention: fileTuru
+      });
+      console.log("document saved corretyl", docRef.id)
+    }
+    catch (e) {
+      console.log(e);
     }
   }
   const switchCameraType = (type: CameraType) => {

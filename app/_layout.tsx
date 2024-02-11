@@ -48,11 +48,12 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack initialRouteName='(modals)' >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="(modals)" options={{ headerShown: false }} />
-      </Stack>
-    </ThemeProvider>
+
+    <Stack initialRouteName='(tabs)' >
+      <Stack.Screen name="(tabs)" options={{ headerShown: false, }} />
+      <Stack.Screen name="(modals)" options={{ headerShown: false }} />
+
+    </Stack>
+
   );
 }
